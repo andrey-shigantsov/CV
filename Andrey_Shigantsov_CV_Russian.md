@@ -1,5 +1,5 @@
 ---
-updated: 2026-07-27T23:05:14+06:00
+updated: 2026-07-27T23:27:48+06:00
 ---
 
 # Андрей Шиганцов
@@ -110,7 +110,7 @@ Senior Rust backend-разработчик, 14+ лет опыта. Строю pr
 ## НАВЫКИ
 
 - **Методологии:** Agile/Scrum
-- **Языки:** Rust
+- **Языки:** Rust (основной), C/C++
 - **Backend:** tokio, gRPC, REST, serde, prost, async-I/O
 - **Данные и обмен сообщениями:** PostgreSQL (sqlx), ClickHouse, Redis, Apache Kafka / Redpanda
 - **Блокчейн / Solana:** смарт-контракты, `anchor-lang`, интеграции с DEX, `solana-program-test`, `solana-test-validator`

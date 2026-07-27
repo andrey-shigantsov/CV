@@ -1,5 +1,5 @@
 ---
-updated: 2026-07-27T23:05:14+06:00
+updated: 2026-07-27T23:27:48+06:00
 ---
 
 # Andrey Shigantsov
@@ -110,7 +110,7 @@ Siberian State Automobile and Highway Academy (СибАДИ) — 2006 – 2011
 ## SKILLS
 
 - **Methodologies:** Agile/Scrum
-- **Languages:** Rust
+- **Languages:** Rust (primary), C/C++
 - **Backend:** tokio, gRPC, REST, serde, prost, async-I/O
 - **Data & Messaging:** PostgreSQL (sqlx), ClickHouse, Redis, Apache Kafka / Redpanda
 - **Blockchain / Solana:** smart contracts, `anchor-lang`, DEX integrations, `solana-program-test`, `solana-test-validator`
