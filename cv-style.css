@@ -1,6 +1,6 @@
 /*
  * cv-style.css — print stylesheet for the CV markdown → PDF pipeline.
- * Applied by md-to-pdf (Node) via --stylesheet.
+ * Applied by md-to-pdf.py (Python-Markdown + WeasyPrint).
  */
 
 @page {

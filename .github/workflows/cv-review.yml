@@ -1,8 +1,8 @@
-# AI review of CV changes using GitHub Models (free tier).
+# AI review of repository changes using GitHub Models (free tier).
 #
-# On every pull request (and on push to a non-main branch) that touches a CV
-# markdown file, this workflow asks a free GitHub Models LLM to review the diff
-# against the rules in AGENTS.md and posts its findings as a PR comment.
+# On every pull request, this workflow asks a free GitHub Models LLM to review
+# the ENTIRE diff (all files, not just CV files) against the rules in
+# AGENTS.md and posts its findings as a PR comment.
 #
 # Cost: free (GitHub Models free tier). No paid API keys required.
 #
@@ -21,15 +21,16 @@
 # Notes:
 #   - GitHub Models free tier is rate-limited (~150 req/day, varies by model).
 #     For a CV repo this is more than enough.
-#   - The review comment is informational only; it never blocks the PR.
+#   - The job FAILS (red ✗) when: the GH_MODELS_TOKEN secret is missing, the
+#     GitHub Models API call errors out, or the AI review reports a BLOCKER
+#     (rule violation / sync broken). Only a clean review (OK / NITs only)
+#     leaves the job green. A PR with an empty diff (no changes) stays green.
+#   - The review covers the ENTIRE PR diff (all files), not just CV files.
 
 name: CV AI Review
 
 on:
-  pull_request:
-    paths:
-      - 'Andrey_Shigantsov_CV_*.md'
-      - 'AGENTS.md'
+  pull_request: {}   # any PR, any files
   workflow_dispatch: {}   # allow manual runs from the Actions tab
 
 # Cancel a previous run on the same PR when new commits are pushed.
@@ -44,8 +45,8 @@ permissions:
 jobs:
   review:
     runs-on: ubuntu-latest
-    # Skip silently if the PAT secret was not configured.
-    if: ${{ vars.ENABLE_CV_REVIEW == 'true' || github.event_name == 'workflow_dispatch' }}
+    # Always run on PR. If the GH_MODELS_TOKEN secret is absent, the review
+    # step skips gracefully and posts a "not configured" comment on the PR.
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,13 +58,12 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.after }}
         run: |
           set -euo pipefail
-          # Diff of the CV-related files between base and head.
+          # Full diff of the PR (all files in the repo), not just CV files.
           git fetch --depth=1 origin "${BASE_SHA}" 2>/dev/null || true
-          DIFF="$(git diff "${BASE_SHA}..${HEAD_SHA}" -- \
-                    'Andrey_Shigantsov_CV_*.md' 'AGENTS.md' || true)"
+          DIFF="$(git diff "${BASE_SHA}..${HEAD_SHA}" || true)"
 
           if [ -z "${DIFF}" ]; then
-            echo "No CV-related changes; skipping review."
+            echo "Empty diff (no changes); skipping review."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -98,9 +98,8 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${GH_MODELS_TOKEN}" ]; then
-            echo "::warning::Secret GH_MODELS_TOKEN is not set. Skipping AI review."
-            echo "result=SKIPPED_NO_TOKEN" >> "$GITHUB_OUTPUT"
-            exit 0
+            echo "::error::Secret GH_MODELS_TOKEN is not set. Configure it in Settings → Secrets → Actions (fine-grained PAT with Models:read scope). Failing the job as requested."
+            exit 1
           fi
 
           # Build the chat request with a JSON array (no template-string quoting hell).
@@ -115,7 +114,12 @@ jobs:
               "stay in sync per the project rules (AGENTS.md). Be specific and "
               "concrete. Quote the offending line. Distinguish BLOCKER (sync "
               "broken, rule violation) from NIT (style). If the diff is fine, "
-              "say so explicitly. Keep the answer under 400 words, markdown."
+              "say so explicitly. Keep the answer under 400 words, markdown.\n\n"
+              "OUTPUT FORMAT (mandatory):\n"
+              "- Start with a one-line verdict: `VERDICT: OK` (no blockers) or "
+              "`VERDICT: BLOCKER` (one or more blockers found).\n"
+              "- Then a `## Findings` section listing each issue as "
+              "`- [BLOCKER] ...` or `- [NIT] ...`."
           )
           user = (
               "Here is the project's rubric (AGENTS.md):\n\n"
@@ -153,16 +157,29 @@ jobs:
           if [ "${HTTP}" != "200" ]; then
             echo "::error::GitHub Models request failed (HTTP ${HTTP})."
             echo "::error::$(head -c 1200 /tmp/resp.json)"
-            echo "result=ERROR_HTTP_${HTTP}" >> "$GITHUB_OUTPUT"
-            exit 0   # don't fail the workflow on a review API hiccup
+            exit 1
           fi
 
           python3 - <<'PY'
-          import json, pathlib
+          import json, pathlib, sys
           data = json.loads(pathlib.Path("/tmp/resp.json").read_text(encoding="utf-8"))
           content = data["choices"][0]["message"]["content"].strip()
           pathlib.Path("/tmp/review.md").write_text(content, encoding="utf-8")
           print("Review length:", len(content), "chars")
+
+          # Parse verdict: fail the job if the model reported BLOCKER.
+          # The system prompt asks for a leading "VERDICT: OK" / "VERDICT: BLOCKER"
+          # line. As a fallback, also treat any "[BLOCKER]" bullet as a failure.
+          verdict_line = next(
+              (ln for ln in content.splitlines()
+               if ln.strip().upper().startswith("VERDICT:")),
+              "",
+          )
+          has_blocker_tag = "[BLOCKER]" in content.upper()
+          is_blocker = "BLOCKER" in verdict_line.upper() or has_blocker_tag
+          pathlib.Path("/tmp/verdict.txt").write_text(
+              "BLOCKER" if is_blocker else "OK", encoding="utf-8")
+          print("Verdict:", "BLOCKER" if is_blocker else "OK")
           PY
           echo "result=OK" >> "$GITHUB_OUTPUT"
 
@@ -174,20 +191,11 @@ jobs:
             const fs = require('fs');
             const review = fs.existsSync('/tmp/review.md')
               ? fs.readFileSync('/tmp/review.md', 'utf8').trim()
-              : '';
-            const status = '${{ steps.ai.outputs.result }}' || 'NONE';
+              : '(no review produced — see workflow logs)';
             const model = '${{ vars.REVIEW_MODEL || 'gpt-4o-mini' }}';
 
             const banner = `🤖 **CV AI Review** — via GitHub Models (\`${model}\`, free tier)`;
-            let body;
-            if (status === 'OK' && review) {
-              body = `${banner}\n\n${review}`;
-            } else if (status === 'SKIPPED_NO_TOKEN') {
-              body = `${banner}\n\n⚠️ Skipped: secret \`GH_MODELS_TOKEN\` is not set. `
-                   + `Add a fine-grained PAT with **Models:read** scope as a repo secret to enable AI review.`;
-            } else {
-              body = `${banner}\n\n⚠️ Review did not run (status: \`${status}\`). See workflow logs.`;
-            }
+            const body = `${banner}\n\n${review}`;
 
             const isPR = !!context.payload.pull_request;
             const owner = context.repo.owner;
@@ -212,3 +220,18 @@ jobs:
               // Manual run (workflow_dispatch) — log the review only.
               core.info('Not a PR; review output:\n\n' + body);
             }
+
+      - name: Fail job if the review reported a BLOCKER
+        if: steps.ctx.outputs.skip != 'true'
+        run: |
+          if [ ! -f /tmp/verdict.txt ]; then
+            echo "::error::No verdict produced — the review step did not complete. See logs."
+            exit 1
+          fi
+          VERDICT="$(cat /tmp/verdict.txt)"
+          echo "Review verdict: ${VERDICT}"
+          if [ "${VERDICT}" = "BLOCKER" ]; then
+            echo "::error::CV AI review found BLOCKER(s). See the review comment on the PR. Fix them and re-push."
+            exit 1
+          fi
+          echo "No blockers — job passes."

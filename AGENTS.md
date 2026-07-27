@@ -38,7 +38,7 @@ the wrong direction. The rules below are defaults; this rule is the override.
 | `Andrey_Shigantsov_CV_English.md` | English | Primary CV, used for international applications |
 | `Andrey_Shigantsov_CV_Russian.md` | Russian | CV for Russian-speaking employers |
 | `AGENTS.md` | — | This file: structure spec + sync checklist
-| `md-to-pdf.py` | — | Pure-Python renderer: reads the `updated` timestamp, then converts each eligible `*.md` to a timestamped PDF in `pdf/` via Python-Markdown + WeasyPrint. Uses `cv-style.css`. |
+| `md-to-pdf.py` | — | Pure-Python renderer: reads the `updated` field, generates the NOTE callout (date + link) at the top of the PDF, and converts each eligible `*.md` to a single overwritten PDF in `pdf/` via Python-Markdown + WeasyPrint. Uses `cv-style.css`. The NOTE text is hardcoded in this script, NOT in the markdown. |
 | `cv-style.css` | — | Print stylesheet applied to all CV PDFs (typography, NOTE callout, page breaks). |
 | `pdf/` | — | Generated PDFs; safe to delete and regenerate (not a source of truth) |
 | `Recomendations/` | — | Source recommendation files (images/PDFs/…); **embedded into the RECOMENDATIONS section of the generated PDF** via markdown image syntax. Name format: `YYYYMMDD_<slug>[_<lang>].<ext>` (see *Section rules*) |
@@ -89,11 +89,13 @@ order:
     in the same change (i.e. kept in sync); if only one file changes, only its
     stamp is updated.
   - This timestamp feeds `md-to-pdf.py` (see *PDF generation* below).
-- **NOTE callout (optional):** a single `> NOTE: …` blockquote immediately
-  after the front-matter, before the H1 name. **It MUST be written in the
-  file's own language** — the English NOTE is in English, the Russian NOTE in
-  Russian (see *No language leakage — STRICT*). Both files SHOULD carry the
-  same NOTE semantically (translated).
+- **NOTE callout (generated, NOT in the markdown):** the markdown files MUST
+  NOT contain a NOTE blockquote — it is generated and injected into the PDF by
+  `md-to-pdf.py` at the top of the document, before the H1 name. The NOTE text
+  (link to the latest version on GitHub) is hardcoded inside `md-to-pdf.py`
+  (`NOTE_TEXT` dict, per language), and the date is taken from the `updated`
+  front-matter field. So: to change the NOTE wording, edit `NOTE_TEXT` in the
+  script — never add a NOTE block to the `.md` files.
 - **Header (name + headline + contacts):** H1 name, then a single bold role line,
   then a **single** contacts line separated by ` | `. No phone number.
 - **SUMMARY:** 2–4 short paragraphs.
@@ -236,15 +238,13 @@ python3 md-to-pdf.py                       # convert all eligible *.md
 python3 md-to-pdf.py Andrey_Shigantsov_CV_English.md   # convert one file
 ```
 
-**Output naming:** `<updated-normalised>_<basename>.pdf` — the timestamp leads
-the file name, e.g.
-`20260727T134557_Andrey_Shigantsov_CV_English.pdf`. The `updated` ISO 8601
-value is normalised to `YYYYMMDDTHHMMSS` (timezone dropped for file-name
-portability). Leading timestamp keeps PDFs sorted newest-first by default in
-directory listings.
+**Output naming:** `<basename>.pdf` — a single, fixed-name file per CV
+(e.g. `Andrey_Shigantsov_CV_English.pdf`), **overwritten on every run**. No
+version history is kept in `pdf/`; the current build date lives in the NOTE
+callout at the top of the document (injected from the `updated` field).
 
 Rules:
-- Each run produces a fresh timestamped PDF (previous ones are kept as history).
+- Each run overwrites the existing PDF in place (only the latest build is kept).
 - `pdf/` is a build artifact, not a source of truth — never hand-edit PDFs
   there; regenerate from the markdown instead.
 - If `md-to-pdf.py` reports `SKIP` for a CV, the CV is missing its `updated`

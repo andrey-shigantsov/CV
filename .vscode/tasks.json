@@ -1,0 +1,21 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CV: Build PDFs",
+            "detail": "Convert every eligible *.md (with an `updated` front-matter field) to PDF in ./pdf/ via Python-Markdown + WeasyPrint (md-to-pdf.py).",
+            "type": "shell",
+            "command": "python3 md-to-pdf.py",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
