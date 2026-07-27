@@ -1,5 +1,5 @@
 ---
-updated: 2026-07-28T00:21:51+06:00
+updated: 2026-07-28T00:31:25+06:00
 ---
 
 # Andrey Shigantsov
@@ -118,7 +118,8 @@ Siberian State Automobile and Highway Academy (СибАДИ) <br>
 - **Observability:** Prometheus, Grafana
 - **Tooling & DevOps:** Docker, Git, CI/CD
 - **Documentation:** Markdown, LaTeX
-- **AI-Assisted Development:** AI-agent workflows (planning → implementation → review loop), agent rules & skills engineering, tech docs as persistent agent memory
+- **AI-agent workflows:** plan → implementation → multi-stage review loop
+- **Agent engineering:** rules, skills, and tech docs as persistent agent memory
 - **Spoken languages:** Russian (Native), English (A2 – Pre-Intermediate)
 
 ---
