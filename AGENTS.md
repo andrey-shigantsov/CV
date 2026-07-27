@@ -222,6 +222,22 @@ Before considering an edit done, verify all of the following:
 - **Headline role:** keep in sync between the H2-sub header and the SUMMARY's
   `Desired role` line.
 
+## Commits
+
+Strict [Conventional Commits](https://www.conventionalcommits.org/). The subject
+line carries the change; add a body **only** when the "why" isn't obvious from
+the subject — and keep it to 1–2 very short lines. No boilerplate, no restating
+the diff.
+
+**Type semantics — the CV files are the product, not docs:**
+
+- `feat:` / `fix:` / `refactor:` / … — **CV content** (`*_English.md`,
+  `*_Russian.md`) and the regenerated `pdf/*.pdf`. Never use `docs:` for CV
+  changes.
+- `docs:` — repo documentation only (`README.md`, `AGENTS.md`).
+- `chore:` / `build:` / `ci:` — tooling & build pipeline (`md-to-pdf.py`,
+  `cv-style.css`, `.vscode/`, `.github/`).
+
 ## PDF generation (MANDATORY after every markdown change)
 
 > **Iron rule:** after ANY change to a `*.md` CV file, run `md-to-pdf.py`
