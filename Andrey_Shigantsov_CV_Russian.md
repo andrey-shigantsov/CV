@@ -1,13 +1,13 @@
 ---
-updated: 2026-07-27T23:50:35+06:00
+updated: 2026-07-28T00:21:51+06:00
 ---
 
 # Андрей Шиганцов
 **Senior Rust Backend Developer**
 
-[a.shigantsov@gmail.com](mailto:a.shigantsov@gmail.com) | Telegram: [@rasaro89](https://t.me/rasaro89) <br>
+[a.shigantsov@gmail.com](mailto:a.shigantsov@gmail.com) | Telegram: [t.me/rasaro89](https://t.me/rasaro89) <br>
 GitHub: [github.com/andrey-shigantsov](https://github.com/andrey-shigantsov) | GitLab: [gitlab.com/andrey-shigantsov](https://gitlab.com/andrey-shigantsov) <br>
-Портфолио: [презентация](https://docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvBHP9CE2k/edit?usp=sharing)
+Портфолио: [docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvBHP9CE2k](https://docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvBHP9CE2k)
 
 ---
 
@@ -96,7 +96,7 @@ Senior Rust backend-разработчик, 14+ лет опыта. Строю pr
 
 - Разработка встраиваемого ПО на C (HOST, DSP) для платформ Cortex-Mx и TMS320C55xx и прикладного ПО на C++ с Qt; написание технической документации.
 - Самостоятельно освоил программирование контроллеров и основы цифровой обработки сигналов (ЦОС) — база для всей последующей встраиваемой разработки.
-- **Приёмник NAVTEX «Фрегат»** ([продукт](http://www.oniip.ru/produkcia/detail.php?SECTION_ID=120&ELEMENT_ID=745)): участие в разработке и сертификации; разработал трансивер NAVTEX, его тест (в том числе на PC), а также части GUI, INS- и Alarm-сервисов.
+- **Приёмник NAVTEX «Фрегат»** ([www.oniip.ru/produkcia/detail.php?SECTION_ID=120&ELEMENT_ID=745](http://www.oniip.ru/produkcia/detail.php?SECTION_ID=120&ELEMENT_ID=745)): участие в разработке и сертификации; разработал трансивер NAVTEX, его тест (в том числе на PC), а также части GUI, INS- и Alarm-сервисов.
 
 ---
 
