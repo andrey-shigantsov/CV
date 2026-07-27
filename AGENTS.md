@@ -217,8 +217,15 @@ Before considering an edit done, verify all of the following:
 - **Dates:** English `Mon YYYY – Mon YYYY` / `– Present`; Russian `мон. ГГГГ – мон. ГГГГ` / `– настоящее время`.
 - **Tech stack:** keep English/technical names as-is in both files (Rust, tokio,
   PostgreSQL, Kafka, etc.) — do not transliterate or translate tool names.
-- **Open-source links:** render as `[repo-name](url)`; group under a **bold**
-  `Open source` / `Открытый код` sub-label inside the relevant company's bullets.
+- **Links:** the visible text of every link is the URL **without its scheme**
+  (`https://`, `http://`, `mailto:`) — e.g.
+  `[github.com/owner/repo](https://github.com/owner/repo)`,
+  `[t.me/user](https://t.me/user)`, `[user@mail.com](mailto:user@mail.com)`.
+  No friendly labels ("presentation", "product", "@handle"). Image embeds
+  `![](url)` are exempt — keep a descriptive alt text there.
+- **Open-source links:** group them under a **bold** `Open source` /
+  `Открытый код` sub-label inside the relevant company's bullets (link text
+  follows the **Links** rule above).
 - **Headline role:** keep in sync between the H2-sub header and the SUMMARY's
   `Desired role` line.
 
