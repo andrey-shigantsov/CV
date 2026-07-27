@@ -1,6 +1,8 @@
 ---
-updated: 2026-07-27T14:10:06+06:00
+updated: 2026-07-27T15:20:20+06:00
 ---
+
+> NOTE: the latest version of this CV is available on GitHub: [github.com/andrey-shigantsov/CV](https://github.com/andrey-shigantsov/CV)
 
 # Andrey Shigantsov
 **Lead Backend Developer (Rust, AI-powered)**
@@ -100,3 +102,9 @@ Siberian State Automobile and Highway Academy (СибАДИ) — 2006 – 2011
 - **Documentation:** Markdown, LaTeX
 - **AI-Assisted Development:** AI-agent workflows (planning → implementation → review loop), agent rules & skills engineering, tech docs as persistent agent memory
 - **Spoken languages:** Russian (Native), English (A2 – Pre-Intermediate)
+
+---
+
+## RECOMENDATIONS
+
+![recomendation-v-latish_eng](./Recomendations/20260717_a-shigantsov_recomendation-v-latish_eng.jpg)

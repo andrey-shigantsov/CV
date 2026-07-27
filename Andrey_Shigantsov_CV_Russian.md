@@ -1,6 +1,8 @@
 ---
-updated: 2026-07-27T14:10:06+06:00
+updated: 2026-07-27T15:20:20+06:00
 ---
+
+> NOTE: актуальная версия резюме: [github.com/andrey-shigantsov/CV](https://github.com/andrey-shigantsov/CV)
 
 # Андрей Шиганцов
 **Lead Backend Developer (Rust, AI-powered)**
@@ -100,3 +102,9 @@ AI-платформа для совместной работы. Разработ
 - **Документация:** Markdown, LaTeX
 - **AI-ассистированная разработка:** цикл работы с AI-агентами (план → реализация → ревью), инженерия правил и скилов агентов, тех-документация как постоянная память агента
 - **Разговорные языки:** русский (родной), английский (A2 — ниже среднего)
+
+---
+
+## РЕКОМЕНДАЦИИ
+
+![recomendation-v-latish_rus](./Recomendations/20260717_a-shigantsov_recomendation-v-latish_rus.jpg)

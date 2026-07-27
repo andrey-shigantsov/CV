@@ -1,40 +1,43 @@
 # CV — Andrey Shigantsov
 
-Резюме на двух языках с автоматической сборкой в PDF.
+A bilingual résumé with automated PDF generation.
 
-## Состав
+## Contents
 
-| Файл | Назначение |
-|------|------------|
-| `Andrey_Shigantsov_CV_English.md` | Резюме на английском |
-| `Andrey_Shigantsov_CV_Russian.md` | Резюме на русском |
-| `md_to_pdf.py` | Скрипт сборки markdown → PDF |
-| `AGENTS.md` | Правила для агентов/редакторов: структура, синхронизация версий, обязательный вызов скрипта |
-| `pdf/` | Сгенерированные PDF (build-артефакты, можно удалять и пересобирать) |
-| `tmp/` | Вспомогательные материалы (исходные PDF-экспорты, образцы) — игнорируется в git |
+| File | Purpose |
+|------|---------|
+| `Andrey_Shigantsov_CV_English.md` | English CV |
+| `Andrey_Shigantsov_CV_Russian.md` | Russian CV |
+| `md-to-pdf.py` | Markdown → PDF build script (Python-Markdown + WeasyPrint) |
+| `cv-style.css` | Print stylesheet for the PDFs (typography, NOTE callout, page breaks) |
+| `AGENTS.md` | Rules for agents/editors: structure, version sync, mandatory script call |
+| `Recomendations/` | Scanned recommendation letters, embedded into the CVs via markdown images |
+| `pdf/` | Generated PDFs (build artifacts — safe to delete and regenerate) |
+| `tmp/` | Working materials (source PDF exports, samples) — git-ignored |
 
-## Сборка PDF
+## Building the PDF
 
 ```bash
-python3 md_to_pdf.py            # собрать PDF из всех подходящих *.md
-python3 md_to_pdf.py file.md    # собрать конкретный файл
+python3 md-to-pdf.py            # build PDFs from every eligible *.md
+python3 md-to-pdf.py file.md    # build a specific file
 ```
 
-Готовые файлы попадают в `pdf/` с таймстампом из YAML front-matter:
-`<имя>_YYYYMMDDTHHMMSS.pdf`. Предыдущие версии сохраняются как история.
+Output goes to `pdf/` with the timestamp from the YAML front-matter leading the
+file name: `<YYYYMMDDTHHMMSS>_<name>.pdf`. Previous versions are kept as history.
 
-### Зависимости
+### Dependencies
 
 - Python 3.8+
-- `reportlab`, `pyyaml`
-- Шрифт **DejaVu Sans** (для кириллицы) — определяется автоматически через `fc-match`.
+- `markdown`, `weasyprint`, `pyyaml` — on Arch: `sudo pacman -S python-markdown python-weasyprint python-yaml`
+  (WeasyPrint pulls in the system libs pango/cairo/gdk-pixbuf/libffi).
+- No Node.js, no headless browser.
 
-## Как вносить изменения
+## How to make changes
 
-Резюме существует в двух языковых версиях, которые должны оставаться
-синхронными. **Все правила и порядок действий описаны в [`AGENTS.md`](./AGENTS.md)** —
-читайте его перед редактированием. Ключевое:
+The CV exists in two language versions that must stay in sync. **All rules and
+procedures are described in [`AGENTS.md`](./AGENTS.md)** — read it before
+editing. Key points:
 
-1. Любое изменение применяется к обоим файлам (`*_English.md` и `*_Russian.md`).
-2. В YAML front-mаре обновляется поле `updated` (ISO 8601) у изменённого файла.
-3. После правки markdown обязательно запускается `python3 md_to_pdf.py`.
+1. Any change is applied to **both** files (`*_English.md` and `*_Russian.md`).
+2. Bump the `updated` field (ISO 8601) in the YAML front-matter of the file(s) you change.
+3. After editing the markdown, always run `python3 md-to-pdf.py`.
