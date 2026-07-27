@@ -1,13 +1,13 @@
 ---
-updated: 2026-07-27T23:50:35+06:00
+updated: 2026-07-28T00:21:51+06:00
 ---
 
 # Andrey Shigantsov
 **Senior Rust Backend Developer**
 
-[a.shigantsov@gmail.com](mailto:a.shigantsov@gmail.com) | Telegram: [@rasaro89](https://t.me/rasaro89) <br>
+[a.shigantsov@gmail.com](mailto:a.shigantsov@gmail.com) | Telegram: [t.me/rasaro89](https://t.me/rasaro89) <br>
 GitHub: [github.com/andrey-shigantsov](https://github.com/andrey-shigantsov) | GitLab: [gitlab.com/andrey-shigantsov](https://gitlab.com/andrey-shigantsov) <br>
-Portfolio: [presentation](https://docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvBHP9CE2k/edit?usp=sharing)
+Portfolio: [docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvBHP9CE2k](https://docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvBHP9CE2k)
 
 ---
 
@@ -96,7 +96,7 @@ Embedded and application software for communication and navigation systems.
 
 - Developed embedded software in C (HOST, DSP) on Cortex-Mx and TMS320C55xx cores and application software in C++ with Qt; authored technical documentation.
 - Self-taught microcontroller programming and the fundamentals of digital signal processing (DSP) on the job — the foundation for all later embedded work.
-- **NAVTEX "Fregat" receiver** ([product](http://www.oniip.ru/produkcia/detail.php?SECTION_ID=120&ELEMENT_ID=745)): participated in development and certification; built the NAVTEX transceiver, its test suite (incl. on PC), and parts of the GUI, INS, and Alarm services.
+- **NAVTEX "Fregat" receiver** ([www.oniip.ru/produkcia/detail.php?SECTION_ID=120&ELEMENT_ID=745](http://www.oniip.ru/produkcia/detail.php?SECTION_ID=120&ELEMENT_ID=745)): participated in development and certification; built the NAVTEX transceiver, its test suite (incl. on PC), and parts of the GUI, INS, and Alarm services.
 
 ---
 
