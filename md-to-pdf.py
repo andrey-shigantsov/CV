@@ -102,6 +102,28 @@ def render_md_to_pdf(md_path: str, out_dir: str, suffix: str) -> str:
 
     # Markdown → HTML. The document title (H1) doubles as the PDF <title>.
     html_body = markdown.markdown(body, extensions=MD_EXTENSIONS)
+
+    # Force the recommendations section onto a fresh page: add class
+    # "recommendations" to its <h2> so cv-style.css can apply
+    # `break-before: page`. Matches both language headings (RECOMENDATIONS /
+    # РЕКОМЕНДАЦИИ), case-insensitive, whether or not the tag already has
+    # attributes.
+    def _tag_recommendations(m):
+        attrs = m.group("attrs") or ""
+        text = m.group("text")
+        if "class=" in attrs:
+            # append to an existing class list
+            attrs = re.sub(r'class="([^"]*)"', r'class="\1 recommendations"',
+                           attrs)
+        else:
+            attrs = (attrs + ' class="recommendations"').strip()
+        return "<h2%s>%s</h2>" % (attrs and " " + attrs, text)
+
+    html_body = re.sub(
+        r"<h2(?P<attrs>\s[^>]*)?>(?P<text>\s*(?:RECOMENDATIONS|РЕКОМЕНДАЦИИ)\s*)</h2>",
+        _tag_recommendations, html_body, flags=re.IGNORECASE,
+    )
+
     title_match = re.search(r"<h1[^>]*>(.*?)</h1>", html_body, re.DOTALL)
     title = (title_match.group(1).strip() if title_match else base)
     # crude tag strip for <title>
