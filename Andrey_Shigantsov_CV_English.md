@@ -1,5 +1,5 @@
 ---
-updated: 2026-07-27T23:27:48+06:00
+updated: 2026-07-27T23:50:35+06:00
 ---
 
 # Andrey Shigantsov
@@ -45,11 +45,11 @@ Backend services and on-chain programs for blockchain products.
 
 - Developed Rust backends (tokio, PostgreSQL, Solana).
 - Developed and maintained smart contracts for the Solana blockchain.
-- **Open source (texture.fi):**
+- **Open source:**
 
-  - [price-proxy](https://github.com/texture-fi/price-proxy) — Solana contract providing unified access to fresh prices from multiple arbiters; developed the system core and the testing system.
-  - [common/macros](https://github.com/texture-fi/common/tree/master/macros) — shared macros used across all contracts, programs, and services.
-  - [anchor-interface](https://github.com/texture-fi/anchor-interface) — lightweight library for interacting with `anchor-lang` smart contracts.
+  - [github.com/texture-fi/price-proxy](https://github.com/texture-fi/price-proxy) — Solana contract providing unified access to fresh prices from multiple arbiters; developed the system core and the testing system.
+  - [github.com/texture-fi/common/tree/master/macros](https://github.com/texture-fi/common/tree/master/macros) — shared macros used across all contracts, programs, and services.
+  - [github.com/texture-fi/anchor-interface](https://github.com/texture-fi/anchor-interface) — lightweight library for interacting with `anchor-lang` smart contracts.
 
 ### **TRADETECH DEVELOPMENT LLC (ООО «Трейдтех Девелопмент»)**
 **Rust Backend & Solana Developer** — Apr 2021 – Nov 2022 (1 year 8 months) <br>
@@ -103,7 +103,8 @@ Embedded and application software for communication and navigation systems.
 ## EDUCATION
 
 **Specialist Degree, Information Security (Comprehensive Information Security of Automated Systems)** <br>
-Siberian State Automobile and Highway Academy (СибАДИ) — 2006 – 2011
+Siberian State Automobile and Highway Academy (СибАДИ) <br>
+2006 – 2011
 
 ---
 
