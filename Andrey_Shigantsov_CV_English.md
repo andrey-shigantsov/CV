@@ -2,7 +2,7 @@
 updated: 2026-07-27T15:20:20+06:00
 ---
 
-> NOTE: the latest version of this CV is available on GitHub: [github.com/andrey-shigantsov/CV](https://github.com/andrey-shigantsov/CV)
+> NOTE: the latest version of this CV: [github.com/andrey-shigantsov/CV](https://github.com/andrey-shigantsov/CV)
 
 # Andrey Shigantsov
 **Lead Backend Developer (Rust, AI-powered)**
