@@ -6,13 +6,13 @@ A bilingual résumé with automated PDF generation.
 
 | File | Purpose |
 |------|---------|
-| `Andrey_Shigantsov_CV_English.md` | English CV |
-| `Andrey_Shigantsov_CV_Russian.md` | Russian CV |
+| [`Andrey_Shigantsov_CV_English.md`](./Andrey_Shigantsov_CV_English.md) | English CV |
+| [`Andrey_Shigantsov_CV_Russian.md`](./Andrey_Shigantsov_CV_Russian.md) | Russian CV |
+| [`pdf/`](./pdf/) | Generated PDFs (build artifacts — safe to delete and regenerate) |
 | `md-to-pdf.py` | Markdown → PDF build script (Python-Markdown + WeasyPrint) |
 | `cv-style.css` | Print stylesheet for the PDFs (typography, NOTE callout, page breaks) |
 | `AGENTS.md` | Rules for agents/editors: structure, version sync, mandatory script call |
 | `Recomendations/` | Scanned recommendation letters, embedded into the CVs via markdown images |
-| `pdf/` | Generated PDFs (build artifacts — safe to delete and regenerate) |
 | `tmp/` | Working materials (source PDF exports, samples) — git-ignored |
 
 ## Building the PDF
