@@ -1,5 +1,5 @@
 ---
-updated: 2026-07-28T00:31:25+06:00
+updated: 2026-07-28T00:43:58+06:00
 ---
 
 # Andrey Shigantsov
@@ -13,7 +13,7 @@ Portfolio: [docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvB
 
 ## SUMMARY
 
-Senior Rust backend developer, 14+ years of experience. I build production backends in Rust: from microservices and Solana smart contracts to embedded software (including C/C++).
+Senior Rust backend developer, 15+ years of experience. I build production backends in Rust: from microservices and Solana smart contracts to embedded software (including C/C++).
 
 I set engineering standards in the team: TDD, code review, technical documentation. I use AI-agent workflows as one of the development tools — planning → agent implementation → multi-stage review → manual control — and personally own the quality of the final code. I help streamline business processes: experience as a Scrum Master and running a project as a PM. Ready to grow into a Tech/Team Lead role.
 
@@ -68,6 +68,17 @@ High-load microservices and Solana DeFi infrastructure. Held partial project-lea
   - **Grafana + Prometheus:** instrumented Rust services with metrics and built advanced observability dashboards.
   - **Apache Kafka:** implemented high-throughput consumers in Rust.
   - **Docker:** containerized services for deployment.
+
+### **Siber Systems Inc**
+**C++ Full-Stack Developer** — Sep 2019 – Mar 2021 (1 year 7 months)
+
+Development and support of C++ software for Windows and Linux (including NAS).
+
+- Independently learned Siber Systems Inc's cross-platform libraries.
+- **In the GoodSync product:**
+
+  - implemented file sync with Google Photos via the REST API;
+  - identified root causes and fixed several critical bugs reported by users.
 
 ### **KV-SVYAZ (НПООО «КВ-связь»)**
 **C/C++ Programmer** — Mar 2017 – Sep 2019 (2 years 7 months) <br>
