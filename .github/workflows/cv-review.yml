@@ -1,0 +1,214 @@
+# AI review of CV changes using GitHub Models (free tier).
+#
+# On every pull request (and on push to a non-main branch) that touches a CV
+# markdown file, this workflow asks a free GitHub Models LLM to review the diff
+# against the rules in AGENTS.md and posts its findings as a PR comment.
+#
+# Cost: free (GitHub Models free tier). No paid API keys required.
+#
+# Setup (one-time):
+#   1. Create a fine-grained PAT with read access to "Models".
+#      (The default GITHUB_TOKEN cannot call models.inference.ai.azure.com from
+#      private repos / for most models.)
+#   2. Add it as a repository secret named GH_MODELS_TOKEN:
+#        Repo → Settings → Secrets and variables → Actions → New repository secret
+#
+# Optional configuration (via repository Variables, Settings → … → Variables):
+#   REVIEW_MODEL  — model id on GitHub Models. Default: "gpt-4o-mini".
+#                   Other free options: "gpt-4o", "DeepSeek-V3-0324",
+#                   "Llama-3.3-70B-Instruct", "Mistral-Large-2411".
+#
+# Notes:
+#   - GitHub Models free tier is rate-limited (~150 req/day, varies by model).
+#     For a CV repo this is more than enough.
+#   - The review comment is informational only; it never blocks the PR.
+
+name: CV AI Review
+
+on:
+  pull_request:
+    paths:
+      - 'Andrey_Shigantsov_CV_*.md'
+      - 'AGENTS.md'
+  workflow_dispatch: {}   # allow manual runs from the Actions tab
+
+# Cancel a previous run on the same PR when new commits are pushed.
+concurrency:
+  group: cv-review-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write     # needed to post the review comment
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    # Skip silently if the PAT secret was not configured.
+    if: ${{ vars.ENABLE_CV_REVIEW == 'true' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Gather review context (diff + AGENTS.md)
+        id: ctx
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.after }}
+        run: |
+          set -euo pipefail
+          # Diff of the CV-related files between base and head.
+          git fetch --depth=1 origin "${BASE_SHA}" 2>/dev/null || true
+          DIFF="$(git diff "${BASE_SHA}..${HEAD_SHA}" -- \
+                    'Andrey_Shigantsov_CV_*.md' 'AGENTS.md' || true)"
+
+          if [ -z "${DIFF}" ]; then
+            echo "No CV-related changes; skipping review."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+          # AGENTS.md is the rubric the reviewer must apply.
+          RUBRIC="$(cat AGENTS.md 2>/dev/null || echo '(AGENTS.md not present)')"
+
+          {
+            printf '%s' "${DIFF}"
+          } > /tmp/diff.txt
+          printf '%s' "${RUBRIC}" > /tmp/rubric.txt
+
+          # GitHub's payload size cap for comments is ~65000 chars; keep sane.
+          python3 - <<'PY'
+          import os, json, pathlib
+          diff = pathlib.Path("/tmp/diff.txt").read_text(encoding="utf-8")
+          rubric = pathlib.Path("/tmp/rubric.txt").read_text(encoding="utf-8")
+          max_diff = 40000
+          if len(diff) > max_diff:
+              diff = diff[:max_diff] + "\n\n…[diff truncated]"
+          pathlib.Path("/tmp/diff.truncated.txt").write_text(diff, encoding="utf-8")
+          print("Diff chars:", len(diff), "| Rubric chars:", len(rubric))
+
+      - name: Run AI review via GitHub Models
+        id: ai
+        if: steps.ctx.outputs.skip != 'true'
+        env:
+          GH_MODELS_TOKEN: ${{ secrets.GH_MODELS_TOKEN }}
+          MODEL: ${{ vars.REVIEW_MODEL || 'gpt-4o-mini' }}
+          ENDPOINT: https://models.inference.ai.azure.com/chat/completions
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_MODELS_TOKEN}" ]; then
+            echo "::warning::Secret GH_MODELS_TOKEN is not set. Skipping AI review."
+            echo "result=SKIPPED_NO_TOKEN" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Build the chat request with a JSON array (no template-string quoting hell).
+          python3 - <<'PY' > /tmp/req.json
+          import json, pathlib
+          rubric = pathlib.Path("/tmp/rubric.txt").read_text(encoding="utf-8")
+          diff = pathlib.Path("/tmp/diff.truncated.txt").read_text(encoding="utf-8")
+
+          system = (
+              "You are a meticulous CV reviewer. You review git diffs of a CV "
+              "that is maintained in two languages (English + Russian) and must "
+              "stay in sync per the project rules (AGENTS.md). Be specific and "
+              "concrete. Quote the offending line. Distinguish BLOCKER (sync "
+              "broken, rule violation) from NIT (style). If the diff is fine, "
+              "say so explicitly. Keep the answer under 400 words, markdown."
+          )
+          user = (
+              "Here is the project's rubric (AGENTS.md):\n\n"
+              "``````markdown\n" + rubric + "\n``````\n\n"
+              "Here is the diff under review:\n\n"
+              "```diff\n" + diff + "\n```\n\n"
+              "Review it. Check at minimum:\n"
+              "- Both language files changed together (sync).\n"
+              "- YAML front-matter `updated` timestamp bumped on changed files.\n"
+              "- Experience/Skills bullet counts match across languages.\n"
+              "- No phone number, no stray LinkedIn link.\n"
+              "- First sentence of SUMMARY states years of experience.\n"
+              "- No language leakage (RU words in EN file or vice versa).\n"
+              "- The edit followed the rule to regenerate PDFs is a NIT only "
+              "  (PDFs are not in the diff by design).\n"
+          )
+          print(json.dumps({
+              "messages": [
+                  {"role": "system", "content": system},
+                  {"role": "user", "content": user},
+              ],
+              "temperature": 0.2,
+              "model": "__MODEL__",
+          }))
+          PY
+          sed -i "s|__MODEL__|${MODEL}|" /tmp/req.json
+
+          echo "Calling GitHub Models (${MODEL})…"
+          HTTP=$(curl -sS -o /tmp/resp.json -w "%{http_code}" \
+                -X POST "${ENDPOINT}" \
+                -H "Authorization: Bearer ${GH_MODELS_TOKEN}" \
+                -H "Content-Type: application/json" \
+                --data @/tmp/req.json)
+
+          if [ "${HTTP}" != "200" ]; then
+            echo "::error::GitHub Models request failed (HTTP ${HTTP})."
+            echo "::error::$(head -c 1200 /tmp/resp.json)"
+            echo "result=ERROR_HTTP_${HTTP}" >> "$GITHUB_OUTPUT"
+            exit 0   # don't fail the workflow on a review API hiccup
+          fi
+
+          python3 - <<'PY'
+          import json, pathlib
+          data = json.loads(pathlib.Path("/tmp/resp.json").read_text(encoding="utf-8"))
+          content = data["choices"][0]["message"]["content"].strip()
+          pathlib.Path("/tmp/review.md").write_text(content, encoding="utf-8")
+          print("Review length:", len(content), "chars")
+          PY
+          echo "result=OK" >> "$GITHUB_OUTPUT"
+
+      - name: Post review comment
+        if: steps.ctx.outputs.skip != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const review = fs.existsSync('/tmp/review.md')
+              ? fs.readFileSync('/tmp/review.md', 'utf8').trim()
+              : '';
+            const status = '${{ steps.ai.outputs.result }}' || 'NONE';
+            const model = '${{ vars.REVIEW_MODEL || 'gpt-4o-mini' }}';
+
+            const banner = `🤖 **CV AI Review** — via GitHub Models (\`${model}\`, free tier)`;
+            let body;
+            if (status === 'OK' && review) {
+              body = `${banner}\n\n${review}`;
+            } else if (status === 'SKIPPED_NO_TOKEN') {
+              body = `${banner}\n\n⚠️ Skipped: secret \`GH_MODELS_TOKEN\` is not set. `
+                   + `Add a fine-grained PAT with **Models:read** scope as a repo secret to enable AI review.`;
+            } else {
+              body = `${banner}\n\n⚠️ Review did not run (status: \`${status}\`). See workflow logs.`;
+            }
+
+            const isPR = !!context.payload.pull_request;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            if (isPR) {
+              // Replace a previous bot comment instead of stacking duplicates.
+              const { data: comments } = await github.rest.issues.listComments({
+                owner, repo, issue_number: context.issue.number,
+              });
+              const botHeader = '🤖 **CV AI Review**';
+              for (const c of comments) {
+                if (c.body && c.body.startsWith(botHeader)) {
+                  await github.rest.issues.deleteComment({ owner, repo, comment_id: c.id });
+                }
+              }
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: context.issue.number, body,
+              });
+              core.info('Posted/updated review comment on PR #' + context.issue.number);
+            } else {
+              // Manual run (workflow_dispatch) — log the review only.
+              core.info('Not a PR; review output:\n\n' + body);
+            }
