@@ -283,6 +283,24 @@ Rules:
   installed and its system libs are present (`python3 -c "import weasyprint"`
   prints a clear error otherwise).
 
+## Documentation
+
+`README.md` and `AGENTS.md` describe the repo's structure, build pipeline, and
+conventions. **Treat them as code, not decoration.** After any change, review
+whether it affects what they document, and update them **in the same change**:
+
+- A new, removed, or renamed file, or a change to the build pipeline
+  (`md-to-pdf.py`, `cv-style.css`, `.vscode/`, `.github/`) → update the README
+  "Contents" table and the relevant AGENTS.md section.
+- A change to CV structure, section rules, or editing conventions → update
+  AGENTS.md.
+- A change to how PDFs are named or produced → update **both** README "Building
+  the PDF" and AGENTS.md "PDF generation".
+
+If a change has no documentation impact, do nothing — don't churn the docs. But
+never let them drift from reality: a reader following README/AGENTS.md must get
+the correct result.
+
 ## Common pitfalls to avoid
 
 - Editing only one language file → breaks sync (rule 1).
