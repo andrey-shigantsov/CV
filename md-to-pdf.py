@@ -42,6 +42,11 @@ STYLESHEET = os.path.join(HERE, "cv-style.css")
 # footnotes, etc.; `attr_list`/`md_in_html` help with edge cases.
 MD_EXTENSIONS = ["extra", "sane_lists", "attr_list"]
 
+# Tab width for nested lists. GitHub/CommonMark nest lists with 2 spaces, but
+# Python-Markdown defaults to 4 — which flattens 2-space sub-lists into the
+# parent level. Set to 2 so the PDF matches the GitHub rendering of the markdown.
+MD_TAB_LENGTH = 2
+
 # NOTE callout text, by language. Injected at the top of every generated PDF
 # (NOT kept in the markdown sources). Placeholders filled at render time:
 #   {date}          — ISO date (YYYY-MM-DD) from the `updated` front-matter field.
@@ -123,7 +128,8 @@ def render_md_to_pdf(md_path: str, out_dir: str, meta: dict) -> str:
     final_path = os.path.join(out_dir, final_name)
 
     # Markdown → HTML. The document title (H1) doubles as the PDF <title>.
-    html_body = markdown.markdown(body, extensions=MD_EXTENSIONS)
+    html_body = markdown.markdown(body, extensions=MD_EXTENSIONS,
+                                  tab_length=MD_TAB_LENGTH)
 
     # Force the recommendations section onto a fresh page: add class
     # "recommendations" to its <h2> so cv-style.css can apply
@@ -157,7 +163,8 @@ def render_md_to_pdf(md_path: str, out_dir: str, meta: dict) -> str:
     pdf_url_short = re.sub(r"^https?://", "", pdf_url)
     note_md = NOTE_TEXT[lang_key].format(
         date=_iso_date(meta), pdf_url=pdf_url, pdf_url_short=pdf_url_short)
-    note_html = markdown.markdown(note_md, extensions=MD_EXTENSIONS)
+    note_html = markdown.markdown(note_md, extensions=MD_EXTENSIONS,
+                                   tab_length=MD_TAB_LENGTH)
     html_body = note_html + "\n" + html_body
 
     title_match = re.search(r"<h1[^>]*>(.*?)</h1>", html_body, re.DOTALL)
