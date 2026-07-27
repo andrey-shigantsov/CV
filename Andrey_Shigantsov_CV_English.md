@@ -7,7 +7,9 @@ updated: 2026-07-27T15:20:20+06:00
 # Andrey Shigantsov
 **Lead Backend Developer (Rust, AI-powered)**
 
-a.shigantsov@gmail.com | Telegram: [@rasaro89](https://t.me/rasaro89) | GitHub: [github.com/andrey-shigantsov](https://github.com/andrey-shigantsov) | GitLab: [gitlab.com/andrey-shigantsov](https://gitlab.com/andrey-shigantsov) | Portfolio: [presentation](https://docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvBHP9CE2k/edit?usp=sharing)
+[a.shigantsov@gmail.com](mailto:a.shigantsov@gmail.com) | Telegram: [@rasaro89](https://t.me/rasaro89) <br>
+GitHub: [github.com/andrey-shigantsov](https://github.com/andrey-shigantsov) | GitLab: [gitlab.com/andrey-shigantsov](https://gitlab.com/andrey-shigantsov) <br>
+Portfolio: [presentation](https://docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvBHP9CE2k/edit?usp=sharing)
 
 ---
 
