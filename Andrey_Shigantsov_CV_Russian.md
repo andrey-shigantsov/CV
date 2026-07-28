@@ -5,7 +5,7 @@ updated: 2026-07-28T00:43:58+06:00
 # Андрей Шиганцов
 **Senior Rust Backend Developer**
 
-[a.shigantsov@gmail.com](mailto:a.shigantsov@gmail.com) | Telegram: [t.me/rasaro89](https://t.me/rasaro89) <br>
+[a.shigantsov@gmail.com](mailto:a.shigantsov@gmail.com) | Telegram: [@rasaro89](https://t.me/rasaro89) | Imo: [@rasaro89](https://imo.im/) <br>
 GitHub: [github.com/andrey-shigantsov](https://github.com/andrey-shigantsov) | GitLab: [gitlab.com/andrey-shigantsov](https://gitlab.com/andrey-shigantsov) <br>
 Портфолио: [docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvBHP9CE2k](https://docs.google.com/presentation/d/1cu0rpvXFcqgHSNspt4M0GizctlspQlxM6nvBHP9CE2k)
 
